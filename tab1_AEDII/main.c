@@ -9,29 +9,43 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct noh{
+struct noh{
     int key;
     struct noh *left;
     struct noh *right;
-}noh;
+};typedef struct noh tree;
 
 int selectedOption;
-noh *mainRoot;
+tree **mainRoot;
 
 int Menu(void);
-void insert(noh *node, noh *root), selectOption(int value);
+void insert(tree *node, tree **root), selectOption(int value);
 
 int main()
 {
-    selectedOption = Menu();
-    selectOption(selectedOption);
+    //selectedOption = Menu();
+    selectOption(Menu());
     main();
 }
 
-noh *createNode(int value)
+/*void inserir(tree **pRaiz, int numero){
+    if(*pRaiz == NULL){
+        *pRaiz = (tree *) malloc(sizeof(tree));
+        (*pRaiz)->left = NULL;
+        (*pRaiz)->right = NULL;
+        (*pRaiz)->key = numero;
+    }else{
+        if(numero < (*pRaiz)->key)
+            inserir(&(*pRaiz)->left, numero);
+        if(numero > (*pRaiz)->key)
+            inserir(&(*pRaiz)->right, numero);
+    }
+}*/
+
+tree *createNode(int value)
 {
-    noh *newNode;
-    newNode = (noh *)malloc(sizeof(noh));
+    tree *newNode;
+    newNode = (tree *)malloc(sizeof(tree));
     
     newNode->key = value;
     newNode->right = NULL;
@@ -43,46 +57,49 @@ noh *createNode(int value)
 void insertOut()
 {
     int valuetoBeInserted;
+    tree *valueSettedtoNode;
     
-    printf("Número à ser inserido: ");
+    printf("\nNúmero à ser inserido: ");
     scanf("%d", &valuetoBeInserted);
-    insert(createNode(valuetoBeInserted), mainRoot);
-    
+    valueSettedtoNode = createNode(valuetoBeInserted);
+    insert(valueSettedtoNode, mainRoot);
 }
 
-void insert(noh *node, noh *root)
+void insert(tree *node, tree **root)
 {
-    if (root == NULL)
+    if ((*root) == NULL)
     {
-        root = node;
+        *root = (tree *)malloc(sizeof(tree));
+        root = &node;
     }
     else
     {
-        if (node->key < (root)->key)
+        if (node->key < (*root)->key)
         {
-            insert(node, (root)->left);
+            insert(node, &(*root)->left);
         }
-        else if (node->key > (root)->key)
+        else if (node->key > (*root)->key)
         {
-            insert(node, (root)->right);
+            insert(node, &(*root)->right);
         }
     }
 }
 
-void showValues(noh *root)
+
+void showValues(tree **root)
 {
     if (root != NULL)
     {
-        printf("%d, ", (root)->key);
-        showValues(root->left);
-        showValues(root->right);
+        printf("%d, ", (*root)->key);
+        showValues(&(*root)->left);
+        showValues(&(*root)->right);
     }
 }
 
 int Menu(void)
 {
     int option;
-    printf("Inserir na árvore - 1\n\nExibir - 0\nOpção: ");
+    printf("Inserir na árvore - 1\nExibir - 0\nOpção: ");
     scanf("%d", &option);
     return option;
 }
